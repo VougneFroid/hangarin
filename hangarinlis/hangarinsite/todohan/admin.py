@@ -26,7 +26,7 @@ class TaskAdmin(admin.ModelAdmin):
 
 @admin.register(SubTask)
 class SubTaskAdmin(admin.ModelAdmin):
-    list_display = ('title', 'status')
+    list_display = ('title', 'status', 'parent_task_name')
     list_filter = ('status',)
     search_fields = ('title',)
 
