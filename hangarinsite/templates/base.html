@@ -109,7 +109,7 @@
                 </div>
               </li>
               <li class="nav-item">
-                <a href="#">
+                <a href="{% url 'task-list' %}">
                   <i class="fas fa-th-list"></i>
                   <p>Menu Item 2</p>
                 </a>
@@ -272,16 +272,10 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="card card-round">
-                  <div class="card-header">
-                    <div class="card-head-row">
-                      <div class="card-title">Your Content Area</div>
-                    </div>
-                  </div>
+                  
                   <div class="card-body">
-                    <p>Start adding your content here!</p>
-                    <!-- Add your custom content here -->
-                    
-                    <!-- Example of Django template blocks for extending content -->
+
+
                     {% block content %}
                     {% endblock %}
                   </div>

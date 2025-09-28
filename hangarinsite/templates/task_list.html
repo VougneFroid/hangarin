@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Todo List</h2>
+
+    <!-- Search and Add Task Row -->
+    <br />
+    <div class="col-md-12 row">
+        <div class="col-md-6">
+            <form class="navbar-left navbar-form nav-search mr-md-3" action="">
+                <div class="input-group">
+                    <input type="text" placeholder="Search ..." class="form-control" />
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="la la-search search-icon"></i>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="pull-right">
+                <a href="{% url 'task-add' %}" class="btn btn-success btn-rounded">
+                    Add Task
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- End Row -->
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.deadline|date:"Y-m-d H:i" }}</td>
+                <td>{{ task.status }}</td>
+                <td>{{ task.category.name }}</td>
+                <td>{{ task.priority.name }}</td>
+                <td>
+                    <a href="task_list/{{ task.id }}">Edit</a>
+                    <a href="task_list/{{ task.id }}/delete" class="text-danger">Delete</a>
+                </td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No tasks found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "includes/pagination.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated object_list=tasks %}
+</div>
+{% endblock %}
