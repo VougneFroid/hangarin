@@ -12,7 +12,7 @@ class HomePageView(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'home'
     template_name = 'home.html'
-    paginate_by = 5
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
