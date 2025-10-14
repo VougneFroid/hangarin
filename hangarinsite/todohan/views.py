@@ -6,8 +6,9 @@ from todohan.forms import TaskForm
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class HomePageView(ListView):
+class HomePageView(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'home'
     template_name = 'home.html'
@@ -27,7 +28,7 @@ class HomePageView(ListView):
         return context
 
     
-class TaskListView(ListView):
+class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'tasks'
     template_name = 'task_list.html'
@@ -50,19 +51,19 @@ class TaskListView(ListView):
             sort_by = 'deadline'
         return qs.order_by(sort_by, 'status')
 
-class TaskCreateView(CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
     template_name = 'task_form.html'
     success_url = reverse_lazy('task-list')
 
-class TaskUpdateView(UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'task_form.html'
     success_url = reverse_lazy('task-list')
 
-class TaskDeleteView(DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = 'task_del.html'
     success_url = reverse_lazy('task-list')

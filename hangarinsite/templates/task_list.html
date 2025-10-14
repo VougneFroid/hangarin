@@ -53,39 +53,32 @@
     </div>
     <!-- End Row -->
 
-    <table class="table table-bordered table-striped mt-3">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Deadline</th>
-                <th>Status</th>
-                <th>Category</th>
-                <th>Priority</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-            <tr>
-                <td>{{ task.title }}</td>
-                <td>{{ task.description }}</td>
-                <td>{{ task.deadline|date:"Y-m-d H:i" }}</td>
-                <td>{{ task.status }}</td>
-                <td>{{ task.category.name }}</td>
-                <td>{{ task.priority.name }}</td>
-                <td>
-                    <a href="{% url 'task-update' task.id %}">Edit</a>
-                    <a href="{% url 'task-delete' task.id %}" class="text-danger">Delete</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">No tasks found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="row">
+        {% for task in tasks %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ task.title }}</h5>
+                    <p class="card-text">{{ task.description }}</p>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><strong>Deadline:</strong> {{ task.deadline|date:"Y-m-d H:i" }}</li>
+                        <li class="list-group-item"><strong>Status:</strong> {{ task.status }}</li>
+                        <li class="list-group-item"><strong>Category:</strong> {{ task.category.name }}</li>
+                        <li class="list-group-item"><strong>Priority:</strong> {{ task.priority.name }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'task-update' task.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'task-delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">No tasks found.</div>
+        </div>
+        {% endfor %}
+    </div>
     {% include "includes/pagination.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated object_list=tasks %}
 </div>
 {% endblock %}

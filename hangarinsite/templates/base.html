@@ -81,33 +81,6 @@
                   <p>Dashboard</p>
                 </a>
               </li>
-              <li class="nav-section">
-                <span class="sidebar-mini-icon">
-                  <i class="fa fa-ellipsis-h"></i>
-                </span>
-                <h4 class="text-section">Your Menu</h4>
-              </li>
-              <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#menu1">
-                  <i class="fas fa-layer-group"></i>
-                  <p>Menu Item 1</p>
-                  <span class="caret"></span>
-                </a>
-                <div class="collapse" id="menu1">
-                  <ul class="nav nav-collapse">
-                    <li>
-                      <a href="#">
-                        <span class="sub-item">Sub Item 1</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <span class="sub-item">Sub Item 2</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
               <li class="nav-item">
                 <a href="{% url 'task-list' %}">
                   <i class="fas fa-th-list"></i>
@@ -212,7 +185,13 @@
                     </div>
                     <span class="profile-username">
                       <span class="op-7">Hi,</span>
-                      <span class="fw-bold">{{ user.get_full_name|default:user.username }}</span>
+                      <span class="fw-bold">
+                        {% if request.user.get_full_name %}
+                          {{ request.user.get_full_name }}
+                        {% else %}
+                          {{ request.user.username }}
+                        {% endif %}
+                      </span>
                     </span>
                   </a>
                   <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -227,8 +206,14 @@
                             />
                           </div>
                           <div class="u-text">
-                            <h4>{{ user.get_full_name|default:user.username }}</h4>
-                            <p class="text-muted">{{ user.email }}</p>
+                            <h4>
+                              {% if request.user.get_full_name %}
+                                {{ request.user.get_full_name }}
+                              {% else %}
+                                {{ request.user.username }}
+                              {% endif %}
+                            </h4>
+                            <p class="text-muted">{{ request.user.email }}</p>
                             <a
                               href="{% url 'home' %}"
                               class="btn btn-xs btn-secondary btn-sm"
@@ -242,7 +227,7 @@
                         <a class="dropdown-item" href="{% url 'home' %}">My Profile</a>
                         <a class="dropdown-item" href="{% url 'home' %}">Settings</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'home' %}">Logout</a>
+                        <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                       </li>
                     </div>
                   </ul>
@@ -259,12 +244,8 @@
               class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4"
             >
               <div>
-                <h3 class="fw-bold mb-3">Dashboard</h3>
-                <h6 class="op-7 mb-2">Welcome to your admin dashboard</h6>
-              </div>
-              <div class="ms-md-auto py-2 py-md-0">
-                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                <a href="#" class="btn btn-primary btn-round">Add New</a>
+                <h3 class="fw-bold mb-3">Hangarin</h3>
+                <h6 class="op-7 mb-2">Welcome to Hangarin Todo List App</h6>
               </div>
             </div>
             
@@ -290,7 +271,7 @@
         <footer class="footer">
           <div class="container-fluid d-flex justify-content-between">
             <div class="copyright">
-              © {% now "Y" %}, Your Company Name
+              © {% now "Y" %}, Vougne Froid Alis
             </div>
           </div>
         </footer>
