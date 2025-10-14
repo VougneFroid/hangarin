@@ -4,22 +4,46 @@
 <div class="container mt-4">
     <h2>Todo List</h2>
 
-    <!-- Search and Add Task Row -->
-    <br />
-    <div class="col-md-12 row">
-        <div class="col-md-6">
-            <form class="navbar-left navbar-form nav-search mr-md-3" action="">
+    <!-- Search, Sort, and Add Task Row -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <form action="{% url 'task-list' %}" method="get" class="form-inline">
                 <div class="input-group">
-                    <input type="text" placeholder="Search ..." class="form-control" />
+                    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search ..." class="form-control" />
                     <div class="input-group-append">
-                        <span class="input-group-text">
+                        <button type="submit" class="btn btn-primary">
                             <i class="la la-search search-icon"></i>
-                        </span>
+                            Search
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <div class="col-md-12">
+                <form method="get" class="row g-2 align-items-center">
+                    {% if request.GET.q %}
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    {% endif %}
+                    <div class="col-auto">
+                        <label for="smallSelect" class="col-form-label">Sort by</label>
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-control form-control-sm" id="smallSelect" name="sort_by">
+                            <option value="deadline" {% if request.GET.sort_by == "deadline" or not request.GET.sort_by %}selected{% endif %}>Deadline</option>
+                            <option value="title" {% if request.GET.sort_by == "title" %}selected{% endif %}>Title</option>
+                            <option value="status" {% if request.GET.sort_by == "status" %}selected{% endif %}>Status</option>
+                            <option value="category__name" {% if request.GET.sort_by == "category__name" %}selected{% endif %}>Category</option>
+                            <option value="priority__name" {% if request.GET.sort_by == "priority__name" %}selected{% endif %}>Priority</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary btn-sm btn-rounded">Sort</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
             <div class="pull-right">
                 <a href="{% url 'task-add' %}" class="btn btn-success btn-rounded">
                     Add Task
@@ -51,10 +75,9 @@
                 <td>{{ task.category.name }}</td>
                 <td>{{ task.priority.name }}</td>
                 <td>
-                    <a href="task_list/{{ task.id }}">Edit</a>
-                    <a href="task_list/{{ task.id }}/delete" class="text-danger">Delete</a>
+                    <a href="{% url 'task-update' task.id %}">Edit</a>
+                    <a href="{% url 'task-delete' task.id %}" class="text-danger">Delete</a>
                 </td>
-
             </tr>
             {% empty %}
             <tr>
