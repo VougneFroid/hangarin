@@ -7,23 +7,42 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import models
 
 class HomePageView(LoginRequiredMixin, ListView):
     model = Task
-    context_object_name = 'home'
-    template_name = 'home.html'
-    paginate_by = 6
+    template_name = "home.html"
+    context_object_name = "recent_tasks"
+    paginate_by = 5
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        # Show only the most recent tasks
+        return Task.objects.order_by('-created_at')[:5]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["total_task"] = Task.objects.count()
 
-        current_year = timezone.now().year
-        context["task_added_this_year"] = Task.objects.filter(created_at__year=current_year).count()
-
+        # General Stats
+        context["total_tasks"] = Task.objects.count()
+        context["completed_tasks"] = Task.objects.filter(status="Completed").count()
+        context["pending_tasks"] = Task.objects.exclude(status="Completed").count()
         context["total_notes"] = Note.objects.count()
-
+        context["total_subtasks"] = SubTask.objects.count()
         context["total_priorities"] = Priority.objects.count()
+        context["total_categories"] = Category.objects.count()
+
+        # Top 3 Priorities (by task count)
+        context["top_priorities"] = (
+            Priority.objects.annotate(task_count=models.Count("task"))
+            .order_by("-task_count")[:3]
+        )
+
+        # Top 3 Categories (by task count)
+        context["top_categories"] = (
+            Category.objects.annotate(task_count=models.Count("task"))
+            .order_by("-task_count")[:3]
+        )
 
         return context
 
