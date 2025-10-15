@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Subtasks</h2>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <form action="{% url 'subtask-list' %}" method="get" class="form-inline">
+                <div class="input-group">
+                    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search ..." class="form-control" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="la la-search search-icon"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="col-md-12">
+                <form method="get" class="row g-2 align-items-center">
+                    {% if request.GET.q %}
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    {% endif %}
+                    <div class="col-auto">
+                        <label for="smallSelect" class="col-form-label">Sort by</label>
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-control form-control-sm" id="smallSelect" name="sort_by">
+                            <option value="created_at" {% if request.GET.sort_by == "created_at" or not request.GET.sort_by %}selected{% endif %}>Created</option>
+                            <option value="title" {% if request.GET.sort_by == "title" %}selected{% endif %}>Title</option>
+                            <option value="status" {% if request.GET.sort_by == "status" %}selected{% endif %}>Status</option>
+                            <option value="parent_task__title" {% if request.GET.sort_by == "parent_task__title" %}selected{% endif %}>Parent Task</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary btn-sm btn-rounded">Sort</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <a href="{% url 'subtask-add' %}" class="btn btn-success btn-rounded">
+                    Add Subtask
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- End Row -->
+
+    <div class="row">
+        {% for subtask in subtasks %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ subtask.title }}</h5>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item">
+                            <strong>Status:</strong>
+                            <span class="badge 
+                                {% if subtask.status == 'Completed' %}bg-success
+                                {% elif subtask.status == 'In Progress' %}bg-info
+                                {% else %}bg-warning text-dark{% endif %}">
+                                {{ subtask.status }}
+                            </span>
+                        </li>
+                        <li class="list-group-item"><strong>Parent Task:</strong> {{ subtask.parent_task.title }}</li>
+                        <li class="list-group-item"><strong>Created:</strong> {{ subtask.created_at|date:"Y-m-d H:i" }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'subtask-edit' subtask.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'subtask-delete' subtask.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">No subtasks found.</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include "includes/pagination.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated object_list=subtasks %}
+</div>
+{% endblock %}

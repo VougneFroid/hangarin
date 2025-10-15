@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
-from todohan.models import Priority, Task, Note
+from todohan.models import Priority, Task, Note, SubTask, Category
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from todohan.forms import TaskForm
+from todohan.forms import TaskForm, NoteForm, SubTaskForm
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
@@ -68,4 +68,87 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'task_del.html'
     success_url = reverse_lazy('task-list')
 
+class NoteListView(LoginRequiredMixin, ListView):
+    model = Note
+    template_name = "note_list.html"
+    context_object_name = "notes"
+    paginate_by = 6
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        sort_by = self.request.GET.get('sort_by', 'created_at')
+
+        if query:
+            qs = qs.filter(
+                Q(content__icontains=query) |
+                Q(task__title__icontains=query)
+            )
+
+        allowed_sort_fields = [
+            'created_at', 'updated_at', 'content', 'task__title'
+        ]
+        if sort_by not in allowed_sort_fields:
+            sort_by = 'created_at'
+
+        return qs.order_by(sort_by)
+
+class NoteCreateView(LoginRequiredMixin, CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = "note_form.html"
+    success_url = reverse_lazy("note-list")
+
+class NoteUpdateView(LoginRequiredMixin, UpdateView):
+    model = Note
+    form_class = NoteForm
+    template_name = "note_form.html"
+    success_url = reverse_lazy("note-list")
+
+class NoteDeleteView(LoginRequiredMixin, DeleteView):
+    model = Note
+    template_name = "note_del.html"
+    success_url = reverse_lazy("note-list")
+
+class SubTaskListView(LoginRequiredMixin, ListView):
+    model = SubTask
+    template_name = "subtask_list.html"
+    context_object_name = "subtasks"
+    paginate_by = 6
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        sort_by = self.request.GET.get('sort_by', 'created_at')
+
+        if query:
+            qs = qs.filter(
+                Q(title__icontains=query) |
+                Q(parent_task__title__icontains=query)
+            )
+
+        allowed_sort_fields = [
+            'created_at', 'updated_at', 'title', 'status', 'parent_task__title'
+        ]
+        if sort_by not in allowed_sort_fields:
+            sort_by = 'created_at'
+
+        return qs.order_by(sort_by, 'status')
+
+class SubTaskCreateView(LoginRequiredMixin, CreateView):
+    model = SubTask
+    form_class = SubTaskForm
+    template_name = "subtask_form.html"
+    success_url = reverse_lazy("subtask-list")
+
+class SubTaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = SubTask
+    form_class = SubTaskForm
+    template_name = "subtask_form.html"
+    success_url = reverse_lazy("subtask-list")
+
+class SubTaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = SubTask
+    template_name = "subtask_del.html"
+    success_url = reverse_lazy("subtask-list")
 

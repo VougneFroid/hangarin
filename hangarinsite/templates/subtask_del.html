@@ -17,7 +17,7 @@
                         <div class="card-body">
                             <form action="" method="post">
                                 {% csrf_token %}
-                                <p>Are you sure you want to delete <strong>"{{ task }}"</strong>?</p>
+                                <p>Are you sure you want to delete <strong>"{{ subtask.title }}"</strong>?</p>
 
                                 <div class="form-group mt-3">
                                     <button type="submit" class="btn btn-danger btn-rounded">

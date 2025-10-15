@@ -1,4 +1,5 @@
 {% load static %}
+{% load pwa %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,13 +9,13 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
       name="viewport"
     />
-    
+    {% progressive_web_app_meta %}
     <!-- Load Django static -->
     {% load static %}
     
     <link
       rel="icon"
-      href="{% static 'img/kaiadmin/favicon.ico' %}"
+      href="{% static 'img/Von_icon.ico' %}"
       type="image/x-icon"
     />
 
@@ -88,6 +89,18 @@
                 </a>
               </li>
               <!-- Add your menu items here -->
+               <li class="nav-item">
+                  <a href="{% url 'note-list' %}">
+                    <i class="fas fa-sticky-note"></i>
+                    <p>Notes</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'subtask-list' %}">
+                    <i class="fas fa-tasks"></i>
+                    <p>Subtasks</p>
+                  </a>
+                </li>
             </ul>
           </div>
         </div>
