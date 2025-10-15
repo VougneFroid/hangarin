@@ -85,7 +85,7 @@
               <li class="nav-item">
                 <a href="{% url 'task-list' %}">
                   <i class="fas fa-th-list"></i>
-                  <p>Hangarin app</p>
+                  <p>Task</p>
                 </a>
               </li>
               <!-- Add your menu items here -->
@@ -96,9 +96,15 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="{% url 'subtask-list' %}">
+                  <a href="{% url 'category-list' %}">
                     <i class="fas fa-tasks"></i>
-                    <p>Subtasks</p>
+                    <p>Category</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'priority-list' %}">
+                    <i class="fas fa-tasks"></i>
+                    <p>Priority</p>
                   </a>
                 </li>
             </ul>

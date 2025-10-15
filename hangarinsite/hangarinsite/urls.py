@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from todohan.views import HomePageView, TaskListView, TaskCreateView, TaskUpdateView, TaskDeleteView
-from todohan.views import NoteListView, NoteCreateView, NoteUpdateView, NoteDeleteView, SubTaskListView, SubTaskCreateView, SubTaskUpdateView, SubTaskDeleteView
+from todohan.views import NoteListView, NoteCreateView, NoteUpdateView, NoteDeleteView, SubTaskListView, SubTaskCreateView, SubTaskUpdateView, SubTaskDeleteView, PriorityListView, PriorityCreateView, PriorityUpdateView, PriorityDeleteView, CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView
 from todohan import views
 
 urlpatterns = [
@@ -37,4 +37,12 @@ urlpatterns = [
     path('subtasks/add/', SubTaskCreateView.as_view(), name='subtask-add'),
     path('subtasks/<int:pk>/edit/', SubTaskUpdateView.as_view(), name='subtask-edit'),
     path('subtasks/<int:pk>/delete/', SubTaskDeleteView.as_view(), name='subtask-delete'),
+    path('priorities/', views.PriorityListView.as_view(), name='priority-list'),
+    path('priorities/add/', views.PriorityCreateView.as_view(), name='priority-add'),
+    path('priorities/<int:pk>/edit/', views.PriorityUpdateView.as_view(), name='priority-edit'),
+    path('priorities/<int:pk>/delete/', views.PriorityDeleteView.as_view(), name='priority-delete'),
+    path('categories/', views.CategoryListView.as_view(), name='category-list'),
+    path('categories/add/', views.CategoryCreateView.as_view(), name='category-add'),
+    path('categories/<int:pk>/edit/', views.CategoryUpdateView.as_view(), name='category-edit'),
+    path('categories/<int:pk>/delete/', views.CategoryDeleteView.as_view(), name='category-delete'),
 ]

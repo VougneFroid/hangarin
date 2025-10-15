@@ -32,7 +32,8 @@ class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     context_object_name = 'tasks'
     template_name = 'task_list.html'
-    paginate_by = 5
+    paginate_by = 6
+    ordering = ['-created_at']
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -73,6 +74,7 @@ class NoteListView(LoginRequiredMixin, ListView):
     template_name = "note_list.html"
     context_object_name = "notes"
     paginate_by = 6
+    ordering = ['-created_at']
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -98,6 +100,7 @@ class NoteCreateView(LoginRequiredMixin, CreateView):
     form_class = NoteForm
     template_name = "note_form.html"
     success_url = reverse_lazy("note-list")
+    
 
 class NoteUpdateView(LoginRequiredMixin, UpdateView):
     model = Note
@@ -115,6 +118,7 @@ class SubTaskListView(LoginRequiredMixin, ListView):
     template_name = "subtask_list.html"
     context_object_name = "subtasks"
     paginate_by = 6
+    ordering = ['-created_at']
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -152,3 +156,84 @@ class SubTaskDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "subtask_del.html"
     success_url = reverse_lazy("subtask-list")
 
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    template_name = "category_list.html"
+    context_object_name = "categories"
+    paginate_by = 6
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        sort_by = self.request.GET.get('sort_by', 'name')
+
+        if query:
+            qs = qs.filter(Q(name__icontains=query))
+
+        allowed_sort_fields = ['name', 'created_at', 'updated_at']
+        if sort_by not in allowed_sort_fields:
+            sort_by = 'name'
+
+        return qs.order_by(sort_by)
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    fields = ['name']
+    template_name = "category_form.html"
+    success_url = reverse_lazy("category-list")
+
+
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Category
+    fields = ['name']
+    template_name = "category_form.html"
+    success_url = reverse_lazy("category-list")
+
+
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Category
+    template_name = "category_del.html"
+    success_url = reverse_lazy("category-list")
+
+class PriorityListView(LoginRequiredMixin, ListView):
+    model = Priority
+    template_name = "priority_list.html"
+    context_object_name = "priorities"
+    paginate_by = 6
+    ordering = ['-created_at']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        sort_by = self.request.GET.get('sort_by', 'name')
+
+        if query:
+            qs = qs.filter(Q(name__icontains=query))
+
+        allowed_sort_fields = ['name', 'created_at', 'updated_at']
+        if sort_by not in allowed_sort_fields:
+            sort_by = 'name'
+
+        return qs.order_by(sort_by)
+
+
+class PriorityCreateView(LoginRequiredMixin, CreateView):
+    model = Priority
+    fields = ['name']
+    template_name = "priority_form.html"
+    success_url = reverse_lazy("priority-list")
+
+
+class PriorityUpdateView(LoginRequiredMixin, UpdateView):
+    model = Priority
+    fields = ['name']
+    template_name = "priority_form.html"
+    success_url = reverse_lazy("priority-list")
+
+
+class PriorityDeleteView(LoginRequiredMixin, DeleteView):
+    model = Priority
+    template_name = "priority_del.html"
+    success_url = reverse_lazy("priority-list")

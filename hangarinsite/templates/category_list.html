@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Categories</h2>
+
+    <!-- Search, Sort, Add Controls -->
+    <div class="row mb-3">
+        <!-- Search -->
+        <div class="col-md-4">
+            <form action="{% url 'category-list' %}" method="get" class="form-inline">
+                <div class="input-group">
+                    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search ..." class="form-control" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="la la-search search-icon"></i>
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sort -->
+        <div class="col-md-4">
+            <div class="col-md-12">
+                <form method="get" class="row g-2 align-items-center">
+                    {% if request.GET.q %}
+                        <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    {% endif %}
+                    <div class="col-auto">
+                        <label for="smallSelect" class="col-form-label">Sort by</label>
+                    </div>
+                    <div class="col-auto">
+                        <select class="form-control form-control-sm" id="smallSelect" name="sort_by">
+                            <option value="name" {% if request.GET.sort_by == "name" or not request.GET.sort_by %}selected{% endif %}>Name</option>
+                            <option value="created_at" {% if request.GET.sort_by == "created_at" %}selected{% endif %}>Created</option>
+                            <option value="updated_at" {% if request.GET.sort_by == "updated_at" %}selected{% endif %}>Last Updated</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary btn-sm btn-rounded">Sort</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Button -->
+        <div class="col-md-4">
+            <div class="pull-right">
+                <a href="{% url 'category-add' %}" class="btn btn-success btn-rounded">
+                    Add Category
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- End Controls -->
+
+    <!-- Category Cards -->
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ category.name }}</h5>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item"><strong>ID:</strong> {{ category.id }}</li>
+                        <li class="list-group-item"><strong>Created:</strong> {{ category.created_at|date:"Y-m-d H:i" }}</li>
+                        <li class="list-group-item"><strong>Updated:</strong> {{ category.updated_at|date:"Y-m-d H:i" }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'category-edit' category.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'category-delete' category.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">No categories found.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% include "includes/pagination.html" with page_obj=page_obj paginator=paginator is_paginated=is_paginated object_list=categories %}
+</div>
+{% endblock %}
